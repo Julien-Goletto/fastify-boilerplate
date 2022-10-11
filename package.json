@@ -1,0 +1,30 @@
+{
+  "name": "fastify-boilerplate",
+  "version": "1.0.0",
+  "description": "Just playing around with fastify, to replace Express as fast as possible...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julien-Goletto/fastify-boilerplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Julien-Goletto/fastify-boilerplate/issues"
+  },
+  "homepage": "https://github.com/Julien-Goletto/fastify-boilerplate#readme",
+  "dependencies": {
+    "@prisma/client": "^4.4.0",
+    "fastify": "^4.8.1",
+    "fastify-jwt": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.8.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.8.4"
+  }
+}
