@@ -14,7 +14,7 @@ const userHandler = {
           updatedAt: true,
         },
       });
-      res.send(users);
+      res.send({users: users});
     }
     catch(err){
       console.error(err);

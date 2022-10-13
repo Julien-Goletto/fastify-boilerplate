@@ -9,6 +9,6 @@ export const routes = [
   }
 ];
 
-export const schemasCollection = [
+export const schemas = [
   userSchemas,
 ];

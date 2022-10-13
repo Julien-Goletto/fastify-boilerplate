@@ -1,17 +1,12 @@
-import { FastifySchema } from "fastify";
-
-export interface RouteSchemasCollection {
-  [key: string]: FastifySchema;
+export interface Schema {
+  $id: string;
+  type: string;
+  properties: object;
+  required: string [];
 }
+
 export interface SchemasCollection {
-  [key: string]: {
-    $id: string;
-    type: string;
-    properties: {
-      [key: string]: string,
-    };
-    required: string[];
-  }
+  [key: string] : Schema;
 }
 
 const userSchemas : SchemasCollection = {
@@ -19,30 +14,13 @@ const userSchemas : SchemasCollection = {
     $id: 'getUsers',
     type: 'object',
     properties:{
-      id: 'number',
-      pseudo: 'string',
-      mail: 'string',
-      createdAt: 'string',
-      updatedAt: 'string',
+      id: { type: 'number'},
+      pseudo: { type: 'string'},
+      mail: { type: 'string'},
+      createdAt: { type: 'string'},
+      updatedAt: { type: 'string'},
     },
     required: [ 'id', 'pseudo', 'mail', 'createdAt', 'updatedAt' ],
-  },
-};
-
-export const routesSchemas : RouteSchemasCollection = {
-  getUsers : {
-    response: {
-      200: {
-        type: 'array',
-        properties: {
-          id: 'int',
-          pseudo: 'string',
-          mail: 'string',
-          createdAt: 'DateTime',
-          updatedAt: 'DateTime',
-        }
-      }
-    }
   },
 };
 

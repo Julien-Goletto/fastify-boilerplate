@@ -13,7 +13,12 @@ const createServer = () => {
   for (const routeSubCategory of routes){
     fastifyInstance.register(routeSubCategory.routes, {prefix: routeSubCategory.prefix});
   }
-  fastifyInstance.get('/api/ping', async () => ({status: 'API ready for requests', schemas: fastifyInstance.getSchemas()}));
+  fastifyInstance.get('/api/ping', async () => (
+    {
+      status: 'API ready for requests',
+      schemas: fastifyInstance.getSchemas(),
+    }
+  ));
 
   return fastifyInstance;
 };
