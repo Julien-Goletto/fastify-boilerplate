@@ -1,13 +1,4 @@
-export interface Schema {
-  $id: string;
-  type: string;
-  properties: object;
-  required: string [];
-}
-
-export interface SchemasCollection {
-  [key: string] : Schema;
-}
+import { SchemasCollection } from '../../types/schema';
 
 const userSchemas : SchemasCollection = {
   getUsers : {
@@ -16,11 +7,11 @@ const userSchemas : SchemasCollection = {
     properties:{
       id: { type: 'number'},
       pseudo: { type: 'string'},
-      mail: { type: 'string'},
+      is_admin: { type: 'boolean'},
       createdAt: { type: 'string'},
       updatedAt: { type: 'string'},
     },
-    required: [ 'id', 'pseudo', 'mail', 'createdAt', 'updatedAt' ],
+    required: [ 'id', 'pseudo', 'is_admin', 'createdAt', 'updatedAt' ],
   },
 };
 
