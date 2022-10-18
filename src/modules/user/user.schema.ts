@@ -1,4 +1,4 @@
-import { SchemasCollection } from '../../types/schema';
+import { SchemasCollection } from '../../types/Schema';
 
 const userSchemas : SchemasCollection = {
   getUsers : {

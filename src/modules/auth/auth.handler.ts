@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply  } from "fastify";
-import { refreshTokens } from '../../plugins/jwt';
+import createTokens from '../../utils/createTokens';
 
 type CustomRequest = FastifyRequest<{
   Body: {
@@ -56,10 +56,10 @@ const authHandler = {
         pseudo: user.pseudo,
         is_admin: user.is_admin || false,
       };
-      const [accessToken, refreshToken] = await refreshTokens(userObject, res);
-      // Passer le refreshToken dans les cookies ------------------------------------------------------------
+      const [accessToken, refreshToken] = await createTokens(userObject, res);
       res
         .code(200)
+        .cookie('refreshToken', refreshToken)
         .send( { user: userObject, accessToken, response: `Welcome back ${pseudo}.` });
     }
     catch(err){

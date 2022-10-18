@@ -1,49 +1,72 @@
-import fastifyJWT, { JWT } from '@fastify/jwt';
-import { FastifyInstance, FastifyPluginCallback, FastifyRequest, FastifyReply } from 'fastify';
+import fastifyJWT from '@fastify/jwt';
+import { FastifyPluginCallback, FastifyRequest, FastifyReply } from 'fastify';
 import plugin from 'fastify-plugin';
-import { access } from 'fs';
-
-const accessTokenSecret = 'niceSecret3000';
-const refreshTokenSecret = 'niceSecret4000';
-
-interface Payload {
-  id: number;
-  pseudo: string;
-  is_admin: boolean;
-}
+import TokensPayload from '../types/TokensPayload';
 
 declare module '@fastify/jwt' {
-  // interface FastifyJWT {
-  //   payload: Payload;
-  //   user: Payload;
-  // }
   interface FastifyJwtSignOptions {
     key: string;
     expiresIn: string | number;
   }
+  interface VerifyOptions {
+    onlyCookie: boolean;
+  }
+  interface FastifyJWT {
+    user: TokensPayload;
+  }
 }
 
+declare module 'fastify' {
+  interface FastifyInstance {
+    accessTokenVerify: (req: FastifyRequest, res: FastifyReply) => void;
+    accessRefreshVerify: (req: FastifyRequest, res: FastifyReply) => void;
+    checkAuthorization: (req: FastifyRequest, res: FastifyReply) => void;
+  }
+}
+
+// Attention l'opérateur ! sur le 
 const jwtPlugin: FastifyPluginCallback = async (fastify, opts, done) => {
   fastify
-    .register(fastifyJWT, { secret: accessTokenSecret })
+    // ! Operator allowed due to envCheck plugin
+    .register(fastifyJWT, { secret: process.env.ACCESS_TOKEN_SECRET! })
     .decorate(
-      "authenticate",
-      async (request: FastifyRequest, reply: FastifyReply) => {
+      "accessTokenVerify",
+      async (req: FastifyRequest, res: FastifyReply) => {
         try {
-          await request.jwtVerify()
+          await req.jwtVerify()
         }
         catch(err) {
-          reply.send(err);
+          res.send(err);
         }
       }
-    );
+    )
+    .decorate(
+      "refreshTokenVerify",
+      async (req: FastifyRequest, res: FastifyReply) => {
+        try {
+          await req.jwtVerify({ onlyCookie: true })
+        }
+        catch(err) {
+          res.send(err);
+        }
+      }
+    )
+    .decorate(
+      "checkAuthorization",
+      async (req: FastifyRequest, res: FastifyReply) => {
+        try {
+          await req.jwtVerify();
+          if (!req.user.pseudo){
+            res.status(403);
+            throw new Error('Access restricted to administrators.')
+          } 
+        }
+        catch(err) {
+          res.send(err);
+        }
+      }
+    )
   done();
 };
 
 export default plugin(jwtPlugin);
-
-export const refreshTokens = async (payload: Payload,res: FastifyReply) => {
-  const accessToken = await res.jwtSign(payload, { expiresIn: 300 } );
-  const refreshToken = await res.jwtSign(payload, { key: refreshTokenSecret, expiresIn: '24h' });
-  return [accessToken, refreshToken];
-}

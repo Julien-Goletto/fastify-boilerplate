@@ -3,6 +3,7 @@ import { routes } from "./modules";
 import prismaPlugin from "./plugins/prisma";
 import schemasPlugin from './plugins/schemas';
 import jwtPlugin from './plugins/jwt';
+import cookiePlugin from './plugins/cookie';
 
 const createServer = () => {
   const fastifyInstance = Fastify({ logger: false });
@@ -11,7 +12,8 @@ const createServer = () => {
   //Plugins
   fastifyInstance
     .register(prismaPlugin)
-    .register(jwtPlugin);
+    .register(jwtPlugin)
+    .register(cookiePlugin);
 
   //Routes
   for (const routeSubCategory of routes){

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Julien-Goletto/fastify-boilerplate#readme",
   "dependencies": {
+    "@fastify/cookie": "^8.3.0",
     "@fastify/jwt": "^6.3.2",
     "@prisma/client": "^4.4.0",
     "dotenv": "^16.0.3",
