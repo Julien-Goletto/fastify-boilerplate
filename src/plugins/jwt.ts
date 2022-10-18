@@ -11,6 +11,9 @@ declare module '@fastify/jwt' {
   interface VerifyOptions {
     onlyCookie: boolean;
   }
+  interface FastifyJwtDecodeOptions {
+    onlyCookie: boolean;
+  }
   interface FastifyJWT {
     user: TokensPayload;
   }
@@ -19,7 +22,7 @@ declare module '@fastify/jwt' {
 declare module 'fastify' {
   interface FastifyInstance {
     accessTokenVerify: (req: FastifyRequest, res: FastifyReply) => void;
-    accessRefreshVerify: (req: FastifyRequest, res: FastifyReply) => void;
+    refreshTokenVerify: (req: FastifyRequest, res: FastifyReply) => void;
     checkAuthorization: (req: FastifyRequest, res: FastifyReply) => void;
   }
 }
@@ -56,7 +59,7 @@ const jwtPlugin: FastifyPluginCallback = async (fastify, opts, done) => {
       async (req: FastifyRequest, res: FastifyReply) => {
         try {
           await req.jwtVerify();
-          if (!req.user.pseudo){
+          if (!req.user.is_admin){
             res.status(403);
             throw new Error('Access restricted to administrators.')
           } 

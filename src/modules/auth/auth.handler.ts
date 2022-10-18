@@ -8,6 +8,11 @@ type CustomRequest = FastifyRequest<{
   };
 }>;
 
+declare module 'fastify'
+interface Cookies {
+  refreshToken: string;
+}
+
 const authHandler = {
   async register (req: CustomRequest, res: FastifyReply) {
     try {
@@ -59,13 +64,34 @@ const authHandler = {
       const [accessToken, refreshToken] = await createTokens(userObject, res);
       res
         .code(200)
-        .cookie('refreshToken', refreshToken)
+        .setCookie('refreshToken', refreshToken, { signed: true })
         .send( { user: userObject, accessToken, response: `Welcome back ${pseudo}.` });
     }
     catch(err){
       res.send(err);
     }
   },
+  async refreshTokens (req: FastifyRequest, res: FastifyReply) {
+    try{
+      const { prisma, user: {id, pseudo, is_admin} } = req;
+      const user = await prisma.user.findUnique({
+        where: { id },
+        select: { id: true, pseudo: true, is_admin: true},
+      });
+      if (!user || user.pseudo !== pseudo || user.is_admin !== is_admin) {
+        res.code(401);
+        throw new Error('Compromised token.');
+      }
+      const [accessToken, refreshToken] = await createTokens({id, pseudo, is_admin}, res);
+      res
+        .code(200)
+        .setCookie('refreshToken', refreshToken, { signed: true })
+        .send( { accessToken, response: `Tokens successfully refreshed.` });
+    }
+    catch(err){
+      res.send(err);
+    }
+  }
 }
 
 export default authHandler;

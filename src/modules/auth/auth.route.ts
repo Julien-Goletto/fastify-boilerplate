@@ -16,12 +16,13 @@ const authRoutes = async (server : FastifyInstance) => {
       schema: authRoutesSchemas.login,
       handler: authHandler.login,
     })
-  // .route({
-  //   method: 'GET',
-  //   url: '/refresh',
-  //   schema: authRoutesSchemas.refreshTokens,
-  //   handler: ,
-  // });
+  .route({
+    method: 'GET',
+    url: '/refreshTokens',
+    schema: authRoutesSchemas.refreshTokens,
+    handler: authHandler.refreshTokens,
+    onRequest: [server.refreshTokenVerify],
+  });
 };
 
 export default authRoutes;
