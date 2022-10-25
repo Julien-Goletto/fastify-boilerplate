@@ -1,3 +1,4 @@
+import fastify from 'fastify';
 import createServer from './server';
 
 const serverConfig = {
@@ -5,12 +6,13 @@ const serverConfig = {
   host: '0.0.0.0',
 }
 
-const server = createServer();
-
 const main = async () => {
   try{
-    await server.listen(serverConfig);
-    console.log(`Server ready at http://${serverConfig.host}:${serverConfig.port}`)
+    const server = fastify({ logger: false });
+    await server
+      .register(createServer)
+      .listen(serverConfig);
+    console.log(`Server ready at http://${serverConfig.host}:${serverConfig.port}`);
   } catch(err){
     console.error(err);
     process.exit(1);

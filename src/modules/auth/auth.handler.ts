@@ -75,7 +75,6 @@ const authHandler = {
       const { prisma, user: {id, pseudo, is_admin, iat: refreshTokenIAT} } = req;
       // Second safeguard : are tokens emmitted at the same time ?
       const {iat: accessTokenIAT} : TokensPayload = await req.jwtDecode();
-      console.log("refreshIAT : ", refreshTokenIAT, " / accessIAT : ", accessTokenIAT);
       if(refreshTokenIAT !== accessTokenIAT){
         res.code(401);
         throw new Error('Compromised authentication.')

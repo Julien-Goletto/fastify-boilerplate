@@ -25,8 +25,8 @@ declare module 'fastify' {
 }
 
 // Attention l'opérateur ! sur le 
-const jwtPlugin: FastifyPluginCallback = async (fastify, opts, done) => {
-  fastify
+const jwtPlugin: FastifyPluginCallback = async (fastifyInstance, opts, done) => {
+  fastifyInstance
     // ! Operator allowed due to envCheck plugin
     .register(fastifyJWT, { 
       secret: process.env.ACCESS_TOKEN_SECRET!,

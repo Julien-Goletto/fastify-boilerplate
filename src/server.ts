@@ -1,19 +1,20 @@
-import Fastify from "fastify";
+import Fastify, { FastifyInstance } from "fastify";
 import { routes } from "./modules";
+import cookiePlugin from './plugins/cookie';
+import envCheckPlugin from './plugins/envCheck';
+import jwtPlugin from './plugins/jwt';
 import prismaPlugin from "./plugins/prisma";
 import schemasPlugin from './plugins/schemas';
-import jwtPlugin from './plugins/jwt';
-import cookiePlugin from './plugins/cookie';
 
-const createServer = () => {
-  const fastifyInstance = Fastify({ logger: false });
-  //Schemas
-  fastifyInstance.register(schemasPlugin);
+const createServer = async (fastifyInstance: FastifyInstance) => {
+  // const fastifyInstance = Fastify({ logger: false });
   //Plugins
   fastifyInstance
-    .register(prismaPlugin)
+    .register(cookiePlugin)
+    .register(envCheckPlugin)
     .register(jwtPlugin)
-    .register(cookiePlugin);
+    .register(prismaPlugin)
+    .register(schemasPlugin);
 
   //Routes
   for (const routeSubCategory of routes){
