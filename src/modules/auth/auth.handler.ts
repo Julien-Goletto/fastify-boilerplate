@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply  } from "fastify";
 import createTokens from '../../utils/createTokens';
+import TokensPayload from '../../types/TokensPayload';
 
 type CustomRequest = FastifyRequest<{
   Body: {
@@ -8,10 +9,7 @@ type CustomRequest = FastifyRequest<{
   };
 }>;
 
-declare module 'fastify'
-interface Cookies {
-  refreshToken: string;
-}
+const cookieConfig = { signed: true, /*secure: true,*/ httpOnly: true, sameSite: true };
 
 const authHandler = {
   async register (req: CustomRequest, res: FastifyReply) {
@@ -64,7 +62,7 @@ const authHandler = {
       const [accessToken, refreshToken] = await createTokens(userObject, res);
       res
         .code(200)
-        .setCookie('refreshToken', refreshToken, { signed: true })
+        .setCookie('refreshToken', refreshToken, { ...cookieConfig })
         .send( { user: userObject, accessToken, response: `Welcome back ${pseudo}.` });
     }
     catch(err){
@@ -73,25 +71,34 @@ const authHandler = {
   },
   async refreshTokens (req: FastifyRequest, res: FastifyReply) {
     try{
-      const { prisma, user: {id, pseudo, is_admin} } = req;
+      //First safeguard : token validation on router-side
+      const { prisma, user: {id, pseudo, is_admin, iat: refreshTokenIAT} } = req;
+      // Second safeguard : are tokens emmitted at the same time ?
+      const {iat: accessTokenIAT} : TokensPayload = await req.jwtDecode();
+      console.log("refreshIAT : ", refreshTokenIAT, " / accessIAT : ", accessTokenIAT);
+      if(refreshTokenIAT !== accessTokenIAT){
+        res.code(401);
+        throw new Error('Compromised authentication.')
+      }
+      // Third safeguard : is the user still a registered member ?
       const user = await prisma.user.findUnique({
         where: { id },
         select: { id: true, pseudo: true, is_admin: true},
       });
       if (!user || user.pseudo !== pseudo || user.is_admin !== is_admin) {
         res.code(401);
-        throw new Error('Compromised token.');
+        throw new Error('Compromised authentication.');
       }
       const [accessToken, refreshToken] = await createTokens({id, pseudo, is_admin}, res);
       res
         .code(200)
-        .setCookie('refreshToken', refreshToken, { signed: true })
+        .setCookie('refreshToken', refreshToken, { ...cookieConfig})
         .send( { accessToken, response: `Tokens successfully refreshed.` });
     }
     catch(err){
       res.send(err);
     }
-  }
+  },
 }
 
 export default authHandler;

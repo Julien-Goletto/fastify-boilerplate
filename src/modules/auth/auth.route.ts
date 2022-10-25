@@ -19,9 +19,10 @@ const authRoutes = async (server : FastifyInstance) => {
   .route({
     method: 'GET',
     url: '/refreshTokens',
-    schema: authRoutesSchemas.refreshTokens,
+    // schema: authRoutesSchemas.refreshTokens,
     handler: authHandler.refreshTokens,
     onRequest: [server.refreshTokenVerify],
+    // onRequest: [server.accessTokenVerify],
   });
 };
 

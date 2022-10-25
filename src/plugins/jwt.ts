@@ -11,9 +11,6 @@ declare module '@fastify/jwt' {
   interface VerifyOptions {
     onlyCookie: boolean;
   }
-  interface FastifyJwtDecodeOptions {
-    onlyCookie: boolean;
-  }
   interface FastifyJWT {
     user: TokensPayload;
   }
@@ -31,7 +28,17 @@ declare module 'fastify' {
 const jwtPlugin: FastifyPluginCallback = async (fastify, opts, done) => {
   fastify
     // ! Operator allowed due to envCheck plugin
-    .register(fastifyJWT, { secret: process.env.ACCESS_TOKEN_SECRET! })
+    .register(fastifyJWT, { 
+      secret: process.env.ACCESS_TOKEN_SECRET!,
+      jwtDecode: true,
+      cookie: {
+        cookieName: 'refreshToken',
+        signed: true,
+      },
+      sign: {
+        expiresIn: '10m',
+      },
+    })
     .decorate(
       "accessTokenVerify",
       async (req: FastifyRequest, res: FastifyReply) => {

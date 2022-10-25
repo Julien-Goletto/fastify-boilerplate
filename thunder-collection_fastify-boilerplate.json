@@ -1,1 +1,14 @@
-{"client":"Thunder Client","collectionName":"fastify-boilerplate","dateExported":"2022-10-13T15:12:10.143Z","version":"1.1","folders":[],"requests":[{"_id":"97d5e975-b77d-441b-825b-0ca73d936288","colId":"ccfef982-fe99-4760-88a9-b750922ce7d4","containerId":"","name":"Server ping","url":"ping","method":"GET","sortNum":10000,"created":"2022-10-11T12:58:50.349Z","modified":"2022-10-12T09:01:31.584Z","headers":[],"params":[],"tests":[]},{"_id":"8a4ac591-9ee8-494f-ba4d-f7e0a7b2897e","colId":"ccfef982-fe99-4760-88a9-b750922ce7d4","containerId":"","name":"getUsers","url":"users","method":"GET","sortNum":20000,"created":"2022-10-12T08:59:58.729Z","modified":"2022-10-12T09:02:28.703Z","headers":[],"params":[],"tests":[]}],"settings":{"headers":[],"tests":[],"options":{"baseUrl":"0.0.0.0:3000/api/"}}}
+{
+  "client":"Thunder Client",
+  "collectionName":"fastify-boilerplate",
+  "dateExported":"2022-10-13T15:12:10.143Z",
+  "version":"1.1",
+  "folders":[],
+  "requests":[
+    {"_id":"97d5e975-b77d-441b-825b-0ca73d936288","colId":"ccfef982-fe99-4760-88a9-b750922ce7d4","containerId":"","name":"Server ping","url":"ping","method":"GET","sortNum":10000,"created":"2022-10-11T12:58:50.349Z","modified":"2022-10-12T09:01:31.584Z","headers":[],"params":[],"tests":[]},
+    {"_id":"8a4ac591-9ee8-494f-ba4d-f7e0a7b2897e","colId":"ccfef982-fe99-4760-88a9-b750922ce7d4","containerId":"","name":"getUsers","url":"users","method":"GET","sortNum":20000,"created":"2022-10-12T08:59:58.729Z","modified":"2022-10-12T09:02:28.703Z","headers":[],"params":[],"tests":[]}
+    ],
+  "settings":{
+    "headers":[],"tests":[],"options":{"baseUrl":"0.0.0.0:3000/api/"}
+    }
+}
