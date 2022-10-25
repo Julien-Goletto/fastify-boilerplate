@@ -1,5 +1,6 @@
 import Fastify, { FastifyInstance } from "fastify";
 import { routes } from "./modules";
+import bcrypt from './plugins/bcrypt';
 import cookiePlugin from './plugins/cookie';
 import envCheckPlugin from './plugins/envCheck';
 import jwtPlugin from './plugins/jwt';
@@ -7,9 +8,9 @@ import prismaPlugin from "./plugins/prisma";
 import schemasPlugin from './plugins/schemas';
 
 const createServer = async (fastifyInstance: FastifyInstance) => {
-  // const fastifyInstance = Fastify({ logger: false });
   //Plugins
   fastifyInstance
+    .register(bcrypt)
     .register(cookiePlugin)
     .register(envCheckPlugin)
     .register(jwtPlugin)

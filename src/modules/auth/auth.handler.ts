@@ -9,6 +9,9 @@ type CustomRequest = FastifyRequest<{
   };
 }>;
 
+const passwordRegExp = '^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\-__+.]){1,}).{12,}$';
+
+// Using HTTPS allows to uncomment secure: true option
 const cookieConfig = { signed: true, /*secure: true,*/ httpOnly: true, sameSite: true };
 
 const authHandler = {
@@ -22,11 +25,13 @@ const authHandler = {
         res.code(409);
         throw new Error('This pseudo is already registered.');
       }
-
-      // Verification contrainte PW ---------------------------------------------------------------------
-      // Hashage du PW ----------------------------------------------------------------------------------
-
-      await prisma.user.create({ data: {pseudo, password, is_admin: false} });
+      // Password strength check
+      if(!password.match(passwordRegExp)){
+        res.code(400);
+        throw new Error('Unsufficient password strength. The password should contain at least 12 characters, no space, one uppercase, one number and one special character among these ones: ! @ # $ % ^ & * ( ) \ -_ + .')
+      }
+      const hashedPassword = await req.bcryptHash(password);
+      await prisma.user.create({ data: {pseudo, password: hashedPassword, is_admin: false} });
       res
         .code(201)
         .send( { message: `User ${pseudo} created. Please log in.`});
@@ -37,9 +42,7 @@ const authHandler = {
   },
   async login (req: CustomRequest, res: FastifyReply) {
     try {
-      const { prisma } = req;
-      const { pseudo, password } = req.body;
-
+      const { prisma, body: {pseudo, password} } = req;
       const user = await prisma.user.findUnique(
         { 
           where: { pseudo },
@@ -49,8 +52,7 @@ const authHandler = {
         res.code(404);
         throw new Error('This user is not registered yet.');
       }
-      // remplacer par vérification du hashage
-      if (password !== user.password){
+      if (await req.bcryptCompare(user.password, password)){
         res.code(401);
         throw new Error('Wrong password, please retry.');
       }
