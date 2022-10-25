@@ -35,6 +35,15 @@ const authSchemas : SchemasCollection = {
     },
     required: [ 'user', 'accessToken', 'response' ],
   },
+  authRefreshTokensHeaders: {
+    $id: 'authRefreshTokensHeaders',
+    type: 'object',
+    properties: {
+      Cookie: { type: 'string' },
+      Authorization: { type: 'string'},
+    },
+    required: ['Cookie', 'Authorization'],
+  },
   authRefreshTokensResponse : {
     $id: 'authRefreshTokensResponse',
     type: 'object',

@@ -1,4 +1,4 @@
-import { RouteSchemasCollection } from "../user/user.route.schema";
+import { RouteSchemasCollection } from "../../types/Schema";
 
 const routesSchemas : RouteSchemasCollection = {
   register : {
@@ -14,6 +14,7 @@ const routesSchemas : RouteSchemasCollection = {
     }
   },
   refreshTokens : {
+    headers: { headers: { $ref : 'authRefreshTokensHeaders' }},
     response: {
       "200": { $ref: 'authRefreshTokensResponse' }
     }
